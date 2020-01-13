@@ -1,30 +1,45 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- <script src="{{ url_for('static', filename='index.js') }}"></script> -->
-        
-
+        <!-- <script src="{{ url_for('static', filename='index new.js') }}"></script> -->
         <script>
-            
             document.addEventListener('DOMContentLoaded', function() {
+                
+                // By default, submit button is disabled
+                document.querySelector('#submit').disabled = true;
+
+                // Enable button only if there is text in the input field
+                document.querySelector('#name').onkeyup = () => {
+                    if (document.querySelector('#name').value.length > 0)
+                        document.querySelector('#submit').disabled = false;
+                    else
+                        document.querySelector('#submit').disabled = true;
+                };
+                // If there is a local name, than show it in h2  
                 if (localStorage.getItem('name')) 
                     document.querySelector('h2').innerHTML = `Hello ${localStorage.getItem('name')}!`
                 
                 document.querySelector('#form').onsubmit = function() {
                     localStorage.setItem('name', document.querySelector('#name').value);
-                    document.querySelector('h2').innerHTML = `Hello ${localStorage.getItem('name')}!`;
+                    
+                    // Show Display name in h2 
+                    document.querySelector('h2').innerHTML = `Display Name ${localStorage.getItem('name')}!`;
+                    
+                    // Clear input field
+                    document.querySelector('#name').value = '';
+                    
+                    // Stops the page from reloading after submitting the form
                     return false;
                 };
             });
         </script>
-
         <title>Flack</title>
     </head>
     <body>
         <h2>Welcome!</h2>
         <form id="form">
-            <input id="name" autocomplete="off" autofocus placeholder="Name" type="text">
-            <input type="submit">
+            <input id="name" autocomplete="off" autofocus placeholder="Your Name" type="text">
+            <input id="submit" type="submit">
         </form>
     </body>
 </html>
