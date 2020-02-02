@@ -38,40 +38,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adding channel: when connected, 
     socket.on('connect', () => {
-    });
-
-    // When user submits new channel, take user input and send it with an event to server
-    document.querySelector('#channel_form').onsubmit = () => {
-        const new_channel_name = document.querySelector('#channel_input').value;
-        socket.emit('add channel', {'new_channel_name': new_channel_name})
         
-        // Stops the page from reloading after submitting the form
-        return false;
-    };
+        // When user submits new channel, take user input and send it with an event to server
+        document.querySelector('#channel_form').onsubmit = () => {
+            const new_channel_name = document.querySelector('#channel_input').value;
+            socket.emit('add channel', {'new_channel_name': new_channel_name})
+            
+            // Stops the page from reloading after submitting the form
+            return false;
+        };
+    });
+    
     
     // When a new channel is announced, add new channel to HTML
     socket.on('all channels', data => {            
         const li = document.createElement('li');
+        // li.outerHTML = `<li class = "select-channel">${data[data.length-1]}</li>`
+        
+        // quiryselector doesn't see these, need to fix
         li.innerHTML = data[data.length-1]; // Get last channel from the array (list)
+        li.setAttribute("class", "select-channel");
         document.querySelector('#channels').append(li);
-    });
-    
-    // When user clicks on a channel
-    document.querySelectorAll('.select-channel').forEach(a => {
-        a.onclick = () => {
-            
-            // Debugging tool
-            alert("I hear this click");
-            
-            room = a.innerHTML;
-            username = localStorage.getItem('display_name_holder');
-            socket.emit('join', {'username': username, 'room': room}); 
-        };
+        
+        //dynamicly created channel gets onclick handler
+        li.onclick = join_channel;
         
     });
+    
+    // Function for emitting channel joining event
+    function join_channel () {
+        // alert("I hear this click");
+        room = this.innerHTML;
+        username = localStorage.getItem('display_name_holder');
+        socket.emit('join', {'username': username, 'room': room}); 
+    };
+
+    // When user clicks on a channel
+    document.querySelectorAll('.select-channel').forEach(li => {
+        li.onclick = join_channel;
+    });
+
     // Display all incoming messages
     socket.on('message', data => {
-        alert ('the server sent the message about new user in the channel');
+        // alert ('the server sent the message about new user in the channel');
         const p = document.createElement('p');
         // HTML to append
         p.innerHTML = data.msg;
