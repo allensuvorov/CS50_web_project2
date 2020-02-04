@@ -7,44 +7,46 @@
         <title>Flack: {{ current_channel }}</title>
     </head>
     <body>
-        <!-- Show Display name -->
-        <h2>
-            <span>Display name:</span>
-            <span id="display-name"></span>
-        </h2>
-        <!-- Set or update display name -->
-        <form id="display_name_form">
-            <input id="display_name_input" autocomplete="off" autofocus placeholder="Your Name" type="text">
-            <input id="display_name_submit" type="submit">
-        </form>
-       
-        <h3>Add a Channel</h3>
-        <form id="channel_form">
-            <input id="channel_input" autocomplete="off" autofocus placeholder="Add Channel" type="text">
-            <input id="channel_submit" type="submit">
-        </form>
-        
-        <!-- List of channels -->
-        <ul id="channels">
-            {% for channel in channels %}
-                <li class="select-channel"> {{channel|title}} </li>
-            {% endfor %}
-        </ul>
-
-        <p>All Channels: {{ channels }}</p>
-
-        <h2> Channel: {{ current_channel }} </h2>
-
-        <!-- Display message start-->
-        <div id="display-message-section">
+        <div id="name-and-channel">
+            <!-- Show Display name -->
+            <h2>
+                <span>Display name:</span>
+                <span id="display-name"></span>
+            </h2>
+            <!-- Set or update display name -->
+            <form id="display_name_form">
+                <input id="display_name_input" autocomplete="off" autofocus placeholder="Your Name" type="text">
+                <input id="display_name_submit" type="submit">
+            </form>
+            <!-- Add channel -->
+            <h3>Add a Channel</h3>
+            <form id="channel_form">
+                <input id="channel_input" autocomplete="off" autofocus placeholder="Add Channel" type="text">
+                <input id="channel_submit" type="submit">
+            </form>
+            <!-- List of channels -->
+            <ul id="channels">
+                {% for channel in channels %}
+                    <li class="select-channel">{{channel|title}}</li>
+                {% endfor %}
+            </ul>
+            
+            <p>All Channels: {{ channels }}</p>
+            <h2> Channel: {{ current_channel }} </h2>
         </div>
-        <!-- Display message end -->
 
-        <h3> Type your message:</h3>
-        <form id="message_form">
-            <input id="message_input" autocomplete="off" autofocus placeholder="type message here" type="text">
-            <input id="message_submit" type="submit">
-        </form>
+        <div id="message">
 
+            <!-- Display message start-->
+            <div id="display-message-section">
+            </div>
+            <!-- Display message end -->
+            
+            <h3> Type your message:</h3>
+            <form id="message_form">
+                <input id="message_input" autocomplete="off" autofocus placeholder="type message here" type="text">
+                <input id="message_submit" type="submit">
+            </form>
+        </div>     
     </body>
 </html>

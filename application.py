@@ -1,4 +1,5 @@
 import os
+import time
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
@@ -37,7 +38,7 @@ def on_join (data):
     
     print (f"\n\n Socket Event - Join {data} \n\n")
 
-    send({"msg":data["username"] + " has joined the " + data["room"] + "channel."}, 
+    send({"msg":data["username"] + " has joined the " + data["room"] + " channel."}, 
     room=data["room"])
 
 # @socketio.on('leave')
@@ -45,6 +46,21 @@ def on_join (data):
 
 #     leave_room(data['room'])
 #     send({'msg':data['username'] + " has left the " + data['room'] + "channel."}, room=data['room'])
+
+@socketio.on('new_message')
+def on_message(data):
+    """Broadcast messages"""
+
+    msg = data["msg"]
+    username = data["username"]
+    room = data["room"]
+    # Set timestamp
+    time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime())
+    send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
+
+    # send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
+
+# "time_stamp": time_stamp
 
 
 # new way of initialization: need to learn how to use
