@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     let room;
     let username;
-    // Display Name Block 
-    {
+    { // Display Name Block Start 
+    
         // By default, submit button is disabled
         document.querySelector('#display_name_submit').disabled = true;
 
@@ -33,10 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Stops the page from reloading after submitting the form
             return false;
         };
-    }
+    } // Display Name Block End
     
-    // WebSocket Block
-    {    
+    { // WebSocket Block Start
+        
         // Connect to websocket
         var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
@@ -87,12 +87,77 @@ document.addEventListener('DOMContentLoaded', () => {
         // Display all incoming messages
         socket.on('message', data => {
             
-            const p = document.createElement('p');
-            // HTML to append
-            p.innerHTML = data.msg;
+            // Display current message
+            if (data.msg) {
+                const p = document.createElement('p');
+                const span_username = document.createElement('span');
+                const span_timestamp = document.createElement('span');
+                const br = document.createElement('br')
+                // Display user's own message
+                if (data.username == username) {
+                        
+                    // p.setAttribute("class", "my-msg");
 
-            // Append
-            document.querySelector('#display-message-section').append(p);
+                    // Username
+                    // span_username.setAttribute("class", "my-username");
+                    span_username.innerText = data.username;
+
+                    // Timestamp
+                    // span_timestamp.setAttribute("class", "timestamp");
+                    span_timestamp.innerText = data.time_stamp;
+
+                    // HTML to append
+                    p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML
+
+                    //Append
+                    document.querySelector('#display-message-section').append(p);
+                }
+                // Display other users' messages
+                else if (typeof data.username !== 'undefined') {
+                    // p.setAttribute("class", "others-msg");
+
+                    // Username
+                    // span_username.setAttribute("class", "other-username");
+                    span_username.innerText = data.username;
+
+                    // Timestamp
+                    span_timestamp.setAttribute("class", "timestamp");
+                    span_timestamp.innerText = data.time_stamp;
+
+                    // HTML to append
+                    p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML;
+
+                    //Append
+                    document.querySelector('#display-message-section').append(p);
+                }
+                // Display system message
+                else {
+                    printSysMsg(data.msg);
+                }
+            }
+            scrollDownChatWindow();
+
+            // Autofocus on text box
+            // document.querySelector("#message_input").focus();
         });
-    }
+
+        // Scroll chat window down
+        function scrollDownChatWindow() {
+            const chatWindow = document.querySelector("#display-message-section");
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Print system messages
+        function printSysMsg(msg) {
+            const p = document.createElement('p');
+            // p.setAttribute("class", "system-msg");
+            p.innerHTML = msg;
+            document.querySelector('#display-message-section').append(p);
+            scrollDownChatWindow()
+
+            // Autofocus on text box
+            document.querySelector("#message_input").focus();
+        }
+
+    } // WebSocket Block End
 });
