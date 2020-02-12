@@ -73,15 +73,34 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Function for emitting channel joining event
         function join_channel () {
-            // alert("I hear this click");
             room = this.innerHTML;
             username = localStorage.getItem('display_name_holder');
             socket.emit('join', {'username': username, 'room': room}); 
         };
 
+        // Function for emitting channel leaving event
+        function leave_channel () {
+            // alert("I hear this click");
+            // room = this.innerHTML;
+            username = localStorage.getItem('display_name_holder');
+            socket.emit('leave', {'username': username, 'room': room}); 
+        };
+
         // When user clicks on a channel
         document.querySelectorAll('.select-channel').forEach(li => {
-            li.onclick = join_channel;
+            li.onclick = () =>{
+                let selected_channel = li.innerHTML
+                // Check if user already in the channel
+                if (selected_channel === room) {
+                    msg = `You are already in the ${room} channel.`;
+                    printSysMsg(msg);
+                } 
+                else {
+                    leave_channel();
+                    join_channel();
+                    room = selected_channel;
+                }
+            };
         });
 
         // Display all incoming messages

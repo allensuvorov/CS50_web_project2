@@ -32,7 +32,7 @@ def add_channel (data):
 
 # these are under development
 @socketio.on('join')
-def on_join (data):
+def join (data):
     
     join_room(data["room"])
     
@@ -41,14 +41,14 @@ def on_join (data):
     send({"msg":data["username"] + " has joined the " + data["room"] + " channel."}, 
     room=data["room"])
 
-# @socketio.on('leave')
-# def leave(data):
+@socketio.on('leave')
+def leave(data):
 
-#     leave_room(data['room'])
-#     send({'msg':data['username'] + " has left the " + data['room'] + "channel."}, room=data['room'])
+    leave_room(data['room'])
+    send({'msg':data['username'] + " has left the " + data['room'] + "channel."}, room=data['room'])
 
 @socketio.on('new_message')
-def on_message(data):
+def message(data):
     """Broadcast messages"""
 
     msg = data["msg"]
