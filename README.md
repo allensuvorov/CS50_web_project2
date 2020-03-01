@@ -1,6 +1,6 @@
 # Project 2
-
-Web Programming with Python and JavaScript
+Description: Online chat application
+Cource: Web Programming with Python and JavaScript
 
 Plan
 1. Display Name:
