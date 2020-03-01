@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let room;
     let username;
-    { // Display Name Block Start 
+    //#region Display Name Block Start 
     
         // By default, submit button is disabled
         document.querySelector('#display_name_submit').disabled = true;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Stops the page from reloading after submitting the form
             return false;
         };
-    } // Display Name Block End
+    //#endregion
     
     { // WebSocket Block Start
         

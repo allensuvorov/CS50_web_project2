@@ -1,8 +1,12 @@
+#region  
+#import libraries
+
 import os
 import time
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
+#endregion
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -21,16 +25,6 @@ def add_channel (data):
     channels.append (data["new_channel_name"])
     emit("all channels", channels, broadcast=True)
 
-# educational event handlers
-# @socketio.on ('message')
-# def message(data):
-
-#     print (f"\n\n{data}\n\n")
-
-#     send(data)
-
-
-# these are under development
 @socketio.on('join')
 def join (data):
     
@@ -59,9 +53,6 @@ def message(data):
     send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
 
     # send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
-
-# "time_stamp": time_stamp
-
 
 # new way of initialization: need to learn how to use
 if __name__ == '__main__':
