@@ -2,11 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     //#region Variables
     let room;
     let username;
+
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-
     //#endregion
-    //#region Display Name 
+    
+    //#region Display Name
     
     // By default, submit button is disabled
     document.querySelector('#display_name_submit').disabled = true;
@@ -38,9 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Stops the page from reloading after submitting the form
         return false;
     };
-    //#endregion
+    //#endregion Display Name
+    
     //#region WebSocket Events and Functions
-        //#region Client Events
+        
+    //#region Client Events
     // When user submits new channel, take user input and send it with an event to server
     document.querySelector('#channel_form').onsubmit = () => {
         const new_channel_name = document.querySelector('#channel_input').value;
@@ -56,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit('new_message', {'msg': new_message, 'username': username, 'room': room}); 
         return false;
     };
-
+    
+    // The bug starts here!
     // When user clicks on a channel
     document.querySelectorAll('.select-channel').forEach(li => {
         li.onclick = () =>{
@@ -74,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
         //#endregion Client Events
-        //#region Server Events
+        
+    //#region Server Events
 
     // When a new channel is announced, add new channel to HTML
     socket.on('all channels', data => {            
@@ -147,16 +152,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Autofocus on text box
         // document.querySelector("#message_input").focus();
     });
-    //#endregion Server Events
-        //#region Functions
-    // Function for emitting channel joining event
+        //#endregion Server Events
+        
+    //#region Functions
+    // Function for emitting join channel event
     function join_channel () {
         room = this.innerHTML;
         username = localStorage.getItem('display_name_holder');
         socket.emit('join', {'username': username, 'room': room}); 
     };
 
-    // Function for emitting channel leaving event
+    // Function for emitting leave channel event
     function leave_channel () {
         // alert("I hear this click");
         // room = this.innerHTML;
@@ -164,7 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit('leave', {'username': username, 'room': room}); 
     };
     //#endregion Functions
+    
     //#endregion WebSocket
+    
     //#region Other Chat functions
     // Scroll chat window down
     function scrollDownChatWindow() {
