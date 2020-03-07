@@ -32,14 +32,14 @@ def join (data):
     
     join_room(data["room"])
     print (f"\n\n Socket Event - Join {data} \n\n")
-    send({"msg":data["username"] + " has joined the " + data["room"] + " channel."}, 
+    send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
     room=data["room"])
 
 @socketio.on('leave')
 def leave(data):
 
     leave_room(data['room'])
-    send({'msg':data['username'] + " has left the " + data['room'] + "channel."}, room=data['room'])
+    send({'msg':data['username'] + " has left the -" + data['room'] + "- channel."}, room=data['room'])
 
 @socketio.on('new_message')
 def message(data):

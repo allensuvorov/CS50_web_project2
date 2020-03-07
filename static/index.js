@@ -40,10 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     };
     //#endregion Display Name
-    
-    //#region WebSocket Events and Functions
         
-    //#region Client Events
+    //#region Client Event Handlers
     // When user submits new channel, take user input and send it with an event to server
     document.querySelector('#channel_form').onsubmit = () => {
         const new_channel_name = document.querySelector('#channel_input').value;
@@ -60,26 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     };
     
-    // The bug starts here!
     // When user clicks on a channel
     document.querySelectorAll('.select-channel').forEach(li => {
-        li.onclick = () =>{
-            let selected_channel = li.innerHTML
-            // Check if user already in the channel
-            if (selected_channel === room) {
-                msg = `You are already in the ${room} channel.`;
-                printSysMsg(msg);
-            } 
-            else {
-                leave_channel();
-                join_channel();
-                room = selected_channel;
-            }
-        };
+        li.onclick = join_channel; //switch_channel;
     });
-        //#endregion Client Events
+    //#endregion Client Events
         
-    //#region Server Events
+    //#region Server WebSocket Event Handlers
 
     // When a new channel is announced, add new channel to HTML
     socket.on('all channels', data => {            
@@ -152,9 +137,24 @@ document.addEventListener('DOMContentLoaded', () => {
         // Autofocus on text box
         // document.querySelector("#message_input").focus();
     });
-        //#endregion Server Events
+    //#endregion Server WebSocket Events
         
     //#region Functions
+    // Switch channel function - The bug starts here!
+    function switch_channel () {
+        let selected_channel = li.innerHTML
+        // Check if user already in the channel
+        if (selected_channel === room) {
+            msg = `You are already in the ${room} channel.`;
+            printSysMsg(msg);
+        } 
+        else {
+            leave_channel;
+            join_channel;
+            room = selected_channel;
+        }
+    };
+
     // Function for emitting join channel event
     function join_channel () {
         room = this.innerHTML;
@@ -169,11 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         username = localStorage.getItem('display_name_holder');
         socket.emit('leave', {'username': username, 'room': room}); 
     };
-    //#endregion Functions
-    
-    //#endregion WebSocket
-    
-    //#region Other Chat functions
+
     // Scroll chat window down
     function scrollDownChatWindow() {
         const chatWindow = document.querySelector("#display-message-section");
