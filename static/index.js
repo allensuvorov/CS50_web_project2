@@ -42,10 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
     //#endregion Display Name
         
     //#region Client Event Handlers
-    // When user submits new channel, take user input and send it with an event to server
-    document.querySelector('#channel_form').onsubmit = () => {
-        const new_channel_name = document.querySelector('#channel_input').value;
-        socket.emit('add channel', {'new_channel_name': new_channel_name})
+    // When user submits new room, take user input and send it with an event to server
+    document.querySelector('#room_form').onsubmit = () => {
+        const new_room_name = document.querySelector('#room_input').value;
+        socket.emit('add room', {'new_room_name': new_room_name})
         
         // Stops the page from reloading after submitting the form
         return false;
@@ -58,26 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     };
     
-    // When user clicks on a channel
-    document.querySelectorAll('.select-channel').forEach(li => {
-        li.onclick = join_channel; //switch_channel;
+    // When user clicks on a room
+    document.querySelectorAll('.select-room').forEach(li => {
+        li.onclick = join_room; //switch_room;
     });
     //#endregion Client Events
         
     //#region Server WebSocket Event Handlers
 
-    // When a new channel is announced, add new channel to HTML
-    socket.on('all channels', data => {            
+    // When a new room is announced, add new room to HTML
+    socket.on('all rooms', data => {            
         const li = document.createElement('li');
         
-        // Get last channel from the array (list)
+        // Get last room from the array (list)
         li.innerHTML = data[data.length-1]; 
         
-        li.setAttribute("class", "select-channel");
-        document.querySelector('#channels').append(li);
+        li.setAttribute("class", "select-room");
+        document.querySelector('#rooms').append(li);
         
-        //dynamically created channel gets onclick handler
-        li.onclick = join_channel;
+        //dynamically created room gets onclick handler
+        li.onclick = join_room;
         
     });
 
@@ -140,30 +140,30 @@ document.addEventListener('DOMContentLoaded', () => {
     //#endregion Server WebSocket Events
         
     //#region Functions
-    // Switch channel function - The bug starts here!
-    function switch_channel () {
-        let selected_channel = li.innerHTML
-        // Check if user already in the channel
-        if (selected_channel === room) {
+    // Switch room function - The bug starts here!
+    function switch_room () {
+        let selected_room = li.innerHTML
+        // Check if user already in the room
+        if (selected_room === room) {
             msg = `You are already in the ${room} channel.`;
             printSysMsg(msg);
         } 
         else {
-            leave_channel;
-            join_channel;
-            room = selected_channel;
+            leave_room;
+            join_room;
+            room = selected_room;
         }
     };
 
-    // Function for emitting join channel event
-    function join_channel () {
+    // Function for emitting join room event
+    function join_room () {
         room = this.innerHTML;
         username = localStorage.getItem('display_name_holder');
         socket.emit('join', {'username': username, 'room': room}); 
     };
 
-    // Function for emitting leave channel event
-    function leave_channel () {
+    // Function for emitting leave room event
+    function leave_room () {
         // alert("I hear this click");
         // room = this.innerHTML;
         username = localStorage.getItem('display_name_holder');

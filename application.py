@@ -11,23 +11,23 @@ socketio = SocketIO(app)
 #endregion
 
 #region: variables
-channels = [] # this list keeps all channels on the server
+rooms = [] # this list keeps all rooms on the server
 #endregion
 
 #region: route events
 @app.route("/")
 def index():
-    return render_template("index.html", channels=channels)
+    return render_template("index.html", rooms=rooms)
 #endregion
 
 #region: socketio events
 
-@socketio.on("add channel") # when a user sends an "add channel" event
-def add_channel (data):
-    channels.append (data["new_channel_name"])
-    emit("all channels", channels, broadcast=True)
+@socketio.on("add room") # when a user sends an "add room" event
+def add_room (data):
+    rooms.append (data["new_room_name"])
+    emit("all rooms", rooms, broadcast=True)
 
-@socketio.on('join') # when a user joins a channel
+@socketio.on('join') # when a user joins a room
 def join (data):
     
     join_room(data["room"])
