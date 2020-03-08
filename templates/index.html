@@ -26,13 +26,21 @@
             </form>
             <!-- List of rooms -->
             <ul id="rooms">
-                {% for room in rooms %}
+                {% for room in all_rooms %}
                     <li class="select-room">{{room}}</li>
                 {% endfor %}
             </ul>
             
-            <p>All Channels: {{ rooms }}</p>
+            <p>All Channels: {{ all_rooms }}</p>
+            
+            {% if current_room %}
             <h3> Current Channel: {{ current_room }} </h3>
+            {% else %}
+            <h3> 
+                <span>Current room:</span>
+                <span id="current-room"></span>
+            </h3>
+            {% endif %}
         </div>
 
         <div id="message">

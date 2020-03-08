@@ -81,6 +81,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
 
+    // When switch room
+    socket.on('switch_room', data =>{
+        // alert(data);
+        document.querySelector('#current-room').innerHTML = data;
+    });
+
     // Display all incoming messages
     socket.on('message', data => {
         
