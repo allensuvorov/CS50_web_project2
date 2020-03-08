@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // When user clicks on a room
     document.querySelectorAll('.select-room').forEach(li => {
-        li.onclick = join_room; //switch_room;
+        li.onclick = switch_room;
     });
     //#endregion Client Events
         
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#rooms').append(li);
         
         //dynamically created room gets onclick handler
-        li.onclick = join_room;
+        li.onclick = switch_room;
         
     });
 
@@ -142,28 +142,31 @@ document.addEventListener('DOMContentLoaded', () => {
     //#region Functions
     // Switch room function - The bug starts here!
     function switch_room () {
-        let selected_room = li.innerHTML
+        let new_selected_room = this.innerHTML;
+        //alert(selected_room);
         // Check if user already in the room
-        if (selected_room === room) {
-            msg = `You are already in the ${room} channel.`;
-            printSysMsg(msg);
-        } 
-        else {
-            leave_room;
-            join_room;
-            room = selected_room;
-        }
+        // if (selected_room === room) {
+            // msg = `You are already in the ${room} channel.`;
+        //     printSysMsg(msg);
+        // } 
+        // else {
+                leave_room(room);
+                join_room(new_selected_room);
+                room = new_selected_room;
+                // alert (`you have joined ${room}`);
+        // }
     };
 
     // Function for emitting join room event
-    function join_room () {
-        room = this.innerHTML;
+    function join_room (room) {
+        //room = this.innerHTML;
+        // alert (`you are about to join ${room}`);
         username = localStorage.getItem('display_name_holder');
         socket.emit('join', {'username': username, 'room': room}); 
     };
 
     // Function for emitting leave room event
-    function leave_room () {
+    function leave_room (room) {
         // alert("I hear this click");
         // room = this.innerHTML;
         username = localStorage.getItem('display_name_holder');
