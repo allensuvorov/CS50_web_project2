@@ -5,6 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    
+    socket.on('connect', () => { 
+        
+        if (localStorage.getItem('room_name_holder')) {
+            join_room(localStorage.getItem('room_name_holder'))
+        };
+
+
+
+    });
+
     //#endregion
     
     //#region Display Name
@@ -82,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // When switch room
-    socket.on('switch_room', data =>{
-        // alert(data);
+    socket.on('switch_room_name', data =>{
+        //  alert(data);
         document.querySelector('#current-room').innerHTML = data;
     });
 
@@ -153,20 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if user already in the room
         // if (selected_room === room) {
             // msg = `You are already in the ${room} channel.`;
-        //     printSysMsg(msg);
-        // } 
-        // else {
+            //     printSysMsg(msg);
+            // } 
+            // else {
                 leave_room(room);
                 join_room(new_selected_room);
                 room = new_selected_room;
+                localStorage.setItem('room_name_holder', room);
                 // alert (`you have joined ${room}`);
         // }
     };
 
     // Function for emitting join room event
     function join_room (room) {
-        //room = this.innerHTML;
-        // alert (`you are about to join ${room}`);
         username = localStorage.getItem('display_name_holder');
         socket.emit('join', {'username': username, 'room': room}); 
     };
