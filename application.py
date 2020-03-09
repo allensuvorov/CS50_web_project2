@@ -3,7 +3,7 @@ import os
 import time
 
 from flask import Flask, render_template, request, session
-from flask_session import Session
+# from flask_session import Session
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, rooms
 
 app = Flask(__name__)
@@ -12,8 +12,8 @@ socketio = SocketIO(app)
 
 # Configure session to use filesystem
 # app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+# app.config["SESSION_TYPE"] = "filesystem"
+# Session(app)
 
 #endregion
 
@@ -27,7 +27,7 @@ current_room = ''
 @app.route("/")
 def index():
     if session.get('session_current_room') is None:
-        print (f"\n\n NO current room, session variable is {session.get('session_current_room')}\n\n")
+        print (f"\n\n NO current room, session variable is {session.get('session_current_room')}\n")
         return render_template("index.html", all_rooms=all_rooms)
     
     current_room = session.get('session_current_room')
@@ -46,6 +46,8 @@ def add_room (data):
 @socketio.on('join') # when a user joins a room
 def join (data):
     
+    print (f"\n\n session variable is {session.get('session_current_room')}\n\n")
+
     # save room into current_room session for this user 
     session['session_current_room'] = data["room"]
     
