@@ -36,7 +36,9 @@ def add_room (data):
 def join (data):
 
     join_room(data["room"])
-    print(/n/n'joined', data"room"] /n/n)
+    print(f'\n\n joined room - {data["room"]} \n\n')
+    
+
     send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
     room=data["room"])
 

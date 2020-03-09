@@ -2,21 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     //#region Variables
     let room;
     let username;
-
+    
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    //#endregion
     
     socket.on('connect', () => { 
-        
-        if (localStorage.getItem('room_name_holder')) {
-            join_room(localStorage.getItem('room_name_holder'))
+        room = localStorage.getItem('room_name_holder');
+        if (room) {join_room(room)
         };
-
-
-
     });
 
-    //#endregion
     
     //#region Display Name
     
@@ -157,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //#endregion Server WebSocket Events
         
     //#region Functions
-    // Switch room function - The bug starts here!
+    // Switch Room function
     function switch_room () {
         let new_selected_room = this.innerHTML;
         //alert(selected_room);
