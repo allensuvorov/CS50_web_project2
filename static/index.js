@@ -7,17 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     //#endregion
     
-    socket.on('connect', () => { 
-        room = localStorage.getItem('room_name_holder');
-        if (room) {join_room(room)
-        };
-    });
-
-    
     //#region Display Name
     
     // By default, submit button is disabled
-    document.querySelector('#display_name_submit').disabled = true;
+    document.querySelector('#display_name_submit').disabled = true; // display name
+    document.querySelector('#room_submit').disabled = true; // new room
 
     // Enable button only if there is text in the input field
     document.querySelector('#display_name_input').onkeyup = () => {
@@ -27,6 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#display_name_submit').disabled = true;
     };
     
+    //
+    document.querySelector('#room_input').onkeyup = () => {
+
+        if (document.querySelector('#room_input').value.length > 0) {
+            document.querySelector('#room_submit').disabled = false;
+            
+            // check if user input channel name is already among channels
+            document.querySelectorAll('.select-room').forEach(li => {
+                if (li.innerHTML == document.querySelector('#room_input').value) {
+                    document.querySelector('#room_submit').disabled = true;
+                };
+            });
+        } else {
+            document.querySelector('#room_submit').disabled = true;
+        };
+        
+    };
+
     // Previously saved display_name is displayed  
     if (localStorage.getItem('display_name_holder')) {
         document.querySelector('#display-name').innerHTML = localStorage.getItem('display_name_holder') 
@@ -72,6 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
     //#endregion Client Events
         
     //#region Server WebSocket Event Handlers
+
+    // On connect, the user is brought back to the room where they were
+    socket.on('connect', () => { 
+        room = localStorage.getItem('room_name_holder');
+        if (room) {join_room(room)
+        };
+    });
 
     // When a new room is announced, add new room to HTML
     socket.on('all rooms', data => {            
