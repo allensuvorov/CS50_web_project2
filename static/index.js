@@ -1,17 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     //#region Variables
-    let room;
+    let room = localStorage.getItem('room_name_holder');
     let username;
     
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     //#endregion
     
-    //#region Display Name
+    //#region Page Settings On-Load Display
     
     // By default, submit button is disabled
     document.querySelector('#display_name_submit').disabled = true; // display name
     document.querySelector('#room_submit').disabled = true; // new room
+    
+    // Previously saved display_name is displayed  
+    if (localStorage.getItem('display_name_holder')) {
+        document.querySelector('#display-name').innerHTML = localStorage.getItem('display_name_holder') 
+    };
+
+    // User is brought back to the room where they were
+    if (room) join_room(room);
+    
+    socket.on('connect', () => { 
+    });
+
+    //#endregion Page Settings On-Load Display
+        
+    //#region Client Event Handlers
 
     // Enable button only if there is text in the input field
     document.querySelector('#display_name_input').onkeyup = () => {
@@ -36,12 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             document.querySelector('#room_submit').disabled = true;
         };
-        
-    };
-
-    // Previously saved display_name is displayed  
-    if (localStorage.getItem('display_name_holder')) {
-        document.querySelector('#display-name').innerHTML = localStorage.getItem('display_name_holder') 
     };
 
     // Adding or changing the display name 
@@ -58,14 +67,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Stops the page from reloading after submitting the form
         return false;
     };
-    //#endregion Display Name
-        
-    //#region Client Event Handlers
+
+    
     // When user submits new room, take user input and send it with an event to server
     document.querySelector('#room_form').onsubmit = () => {
         const new_room_name = document.querySelector('#room_input').value;
         socket.emit('add room', {'new_room_name': new_room_name})
         
+        // Clear input field
+        document.querySelector('#room_input').value = '';
+
         // Stops the page from reloading after submitting the form
         return false;
     };
@@ -85,12 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
     //#region Server WebSocket Event Handlers
 
-    // On connect, the user is brought back to the room where they were
-    socket.on('connect', () => { 
-        room = localStorage.getItem('room_name_holder');
-        if (room) {join_room(room)
-        };
-    });
+    
 
     // When a new room is announced, add new room to HTML
     socket.on('all rooms', data => {            
@@ -177,17 +183,17 @@ document.addEventListener('DOMContentLoaded', () => {
         let new_selected_room = this.innerHTML;
         //alert(selected_room);
         // Check if user already in the room
-        // if (selected_room === room) {
-            // msg = `You are already in the ${room} channel.`;
-            //     printSysMsg(msg);
-            // } 
-            // else {
+        if (new_selected_room === room) {
+            msg = `You are already in the ${room} channel.`;
+                printSysMsg(msg);
+            } 
+            else {
                 leave_room(room);
                 join_room(new_selected_room);
                 room = new_selected_room;
                 localStorage.setItem('room_name_holder', room);
                 // alert (`you have joined ${room}`);
-        // }
+        }
     };
 
     // Function for emitting join room event
