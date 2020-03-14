@@ -107,12 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
 
-    // When switch room
-    socket.on('switch_room_name', data =>{
+    // switch room name on user page
+    socket.on('switch room name', data =>{
         //  alert(data);
         document.querySelector('#current-room').innerHTML = data;
     });
 
+    // send message history of the room to user
+    socket.on('all messages', data =>{
+        // alert(JSON.stringify(data)); 
+        document.querySelector('#display-message-section').append(JSON.stringify(data));
+    });
     // Display all incoming messages
     socket.on('message', data => {
         
@@ -192,7 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function for emitting join room event
     function join_room (room) {
-        socket.emit('join', {'username': username, 'room': room}); 
+        socket.emit('join', {'username': username, 'room': room});
+
+        // Clear message area
+        document.querySelector('#display-message-section').innerHTML = '';
     };
 
     // Function for emitting leave room event

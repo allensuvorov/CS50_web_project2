@@ -13,14 +13,14 @@ socketio = SocketIO(app)
 
 #region: variables
 all_rooms = [] # this list keeps all rooms on the server
-
+all_messages = [] # this list of lists of dictionaries keeps all messages on the server
+dict_message = {}
 
 #endregion
 
 #region: route events
 @app.route("/")
 def index():
-    
     return render_template("index.html", all_rooms=all_rooms)
 
 #endregion
@@ -30,19 +30,22 @@ def index():
 @socketio.on("add room") # when a user sends an "add room" event
 def add_room (data):
     all_rooms.append (data["new_room_name"])
+    # all_messages.append([]) # add an empty sub list
     emit("all rooms", all_rooms, broadcast=True)
 
 @socketio.on('join') # when a user joins a room
 def join (data):
-
-    join_room(data["room"])
-    print(f'\n\n joined room - {data["room"]} \n\n')
     
+    join_room(data["room"]) # join roof function
+    print(f'\n\n joined room - {data["room"], all_messages, dict_message} \n\n') # print to console this messate with room
+    
+    # here will send event with json passing 100 messages the user
+    emit("all messages", all_messages)
 
     send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
-    room=data["room"])
+    room=data["room"]) # send all users in the this notification of the join
+    emit('switch room name', data["room"]) # send user new room name with event to show it on the page
 
-    emit('switch_room_name', data["room"])
 
 @socketio.on('leave')
 def leave(data):
@@ -57,9 +60,16 @@ def message(data):
     msg = data["msg"]
     username = data["username"]
     room = data["room"]
-    # Set timestamp
-    time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime())
-    send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
+    time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime()) # Set timestamp
+    
+    dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp}
+    # all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
+    all_messages.append(dict_message) # add message to sub list
+    # all_messages.append (data["msg"])
+
+    print(f'\n\n all messages - {data["room"], all_messages} \n\n') # print to console this messate with room
+    #all_messages, dict_message, 
+    send(dict_message, room=room)
 
 #endregion
 
