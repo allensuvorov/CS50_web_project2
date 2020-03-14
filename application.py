@@ -30,7 +30,7 @@ def index():
 @socketio.on("add room") # when a user sends an "add room" event
 def add_room (data):
     all_rooms.append (data["new_room_name"])
-    # all_messages.append([]) # add an empty sub list
+    all_messages.append([]) # add an empty sub list
     emit("all rooms", all_rooms, broadcast=True)
 
 @socketio.on('join') # when a user joins a room
@@ -63,12 +63,11 @@ def message(data):
     time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime()) # Set timestamp
     
     dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp}
-    # all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
-    all_messages.append(dict_message) # add message to sub list
-    # all_messages.append (data["msg"])
+    all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
+    # all_messages.append(dict_message) # add message to sub list
 
     print(f'\n\n all messages - {data["room"], all_messages} \n\n') # print to console this messate with room
-    #all_messages, dict_message, 
+
     send(dict_message, room=room)
 
 #endregion
