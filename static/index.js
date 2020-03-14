@@ -1,30 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
     //#region Variables
     let room = localStorage.getItem('room_name_holder');
-    let username;
+    let username = localStorage.getItem('display_name_holder');
     
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     //#endregion
     
-    //#region Page Settings On-Load Display
+    //#region Page Settings On-Load
     
     // By default, submit button is disabled
     document.querySelector('#display_name_submit').disabled = true; // display name
     document.querySelector('#room_submit').disabled = true; // new room
     
     // Previously saved display_name is displayed  
-    if (localStorage.getItem('display_name_holder')) {
-        document.querySelector('#display-name').innerHTML = localStorage.getItem('display_name_holder') 
-    };
+    if (username) document.querySelector('#display-name').innerHTML = username;
 
     // User is brought back to the room where they were
     if (room) join_room(room);
-    
-    socket.on('connect', () => { 
-    });
 
-    //#endregion Page Settings On-Load Display
+    //#endregion Page Settings On-Load
         
     //#region Client Event Handlers
 
@@ -57,9 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#display_name_form').onsubmit = () => {
         // Take the new display name from user input and save it to the holder variable
         localStorage.setItem('display_name_holder', document.querySelector('#display_name_input').value);
-        
+        username = localStorage.getItem('display_name_holder')
+
         // Show the display name in h2 
-        document.querySelector('#display-name').innerHTML = localStorage.getItem('display_name_holder');
+        document.querySelector('#display-name').innerHTML = username;
         
         // Clear input field
         document.querySelector('#display_name_input').value = '';
@@ -95,8 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //#endregion Client Events
         
     //#region Server WebSocket Event Handlers
-
-    
 
     // When a new room is announced, add new room to HTML
     socket.on('all rooms', data => {            
@@ -198,15 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function for emitting join room event
     function join_room (room) {
-        username = localStorage.getItem('display_name_holder');
         socket.emit('join', {'username': username, 'room': room}); 
     };
 
     // Function for emitting leave room event
     function leave_room (room) {
-        // alert("I hear this click");
-        // room = this.innerHTML;
-        username = localStorage.getItem('display_name_holder');
         socket.emit('leave', {'username': username, 'room': room}); 
     };
 
