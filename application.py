@@ -43,7 +43,8 @@ def join (data):
     
     # get messages from this room
     room_messages = all_messages[all_rooms.index(data["room"])]
-    # here will send event with json passing 100 messages the user
+    
+    # send event with json passing 100 messages the user
     emit("room messages", room_messages)
 
     send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
@@ -68,10 +69,11 @@ def message(data):
     time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime()) # Set timestamp
     
     dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp}
-    all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
+    if len(all_messages[all_rooms.index(room)]) <= 100:
+        all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
     # all_messages.append(dict_message) # add message to sub list
 
-    print(f'\n\n all messages - {data["room"], all_messages} \n\n') # print to console this messate with room
+    print(f'\n\n all messages - {data["room"], all_messages, len(all_messages[all_rooms.index(room)])} \n\n') # print to console this messate with room
 
     send(dict_message, room=room)
 
