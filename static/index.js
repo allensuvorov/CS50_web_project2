@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //#region Variables
     let room = localStorage.getItem('room_name_holder');
     let username = localStorage.getItem('display_name_holder');
-    
+    let message = {};
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     //#endregion
@@ -116,7 +116,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // send message history of the room to user
     socket.on('room messages', data =>{
         // alert(JSON.stringify(data)); 
-        document.querySelector('#display-message-section').append(JSON.stringify(data));
+        // document.querySelector('#display-message-section').append(JSON.stringify(data));
+        // document.querySelector('#display-message-section').append(" <br> ")
+        // document.querySelector('#display-message-section').append(JSON.stringify(data[0.msg]));
+        data.forEach (message =>{
+
+            const p = document.createElement('p');
+            const span_username = document.createElement('span');
+            const span_timestamp = document.createElement('span');
+            const br = document.createElement('br')
+ 
+            // p.setAttribute("class", "my-msg");
+            // Username
+            // span_username.setAttribute("class", "my-username");
+            span_username.innerText = message.username;
+            // Timestamp
+            // span_timestamp.setAttribute("class", "timestamp");
+            span_timestamp.innerText = message.time_stamp;
+            // HTML to append
+            p.innerHTML += span_username.outerHTML + br.outerHTML + message.msg + br.outerHTML + span_timestamp.outerHTML
+            //Append
+            document.querySelector('#display-message-section').append(p);
+        });
+        // message = data[0]
+
+        // document.querySelector('#display-message-section').append(message.username,message.msg);
+
+
     });
     // Display all incoming messages
     socket.on('message', data => {
