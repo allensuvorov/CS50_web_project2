@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // send message history of the room to user
-    socket.on('all messages', data =>{
+    socket.on('room messages', data =>{
         // alert(JSON.stringify(data)); 
         document.querySelector('#display-message-section').append(JSON.stringify(data));
     });

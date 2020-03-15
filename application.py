@@ -14,6 +14,7 @@ socketio = SocketIO(app)
 #region: variables
 all_rooms = [] # this list keeps all rooms on the server
 all_messages = [] # this list of lists of dictionaries keeps all messages on the server
+room_messages = [] # list with messages from a specific room
 dict_message = {}
 
 #endregion
@@ -36,15 +37,19 @@ def add_room (data):
 @socketio.on('join') # when a user joins a room
 def join (data):
     
-    join_room(data["room"]) # join roof function
-    print(f'\n\n joined room - {data["room"], all_messages, dict_message} \n\n') # print to console this messate with room
+    room = data["room"]
+
+    join_room(data["room"]) # join room function
     
+    # get messages from this room
+    room_messages = all_messages[all_rooms.index(data["room"])]
     # here will send event with json passing 100 messages the user
-    emit("all messages", all_messages)
+    emit("room messages", room_messages)
 
     send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
     room=data["room"]) # send all users in the this notification of the join
     emit('switch room name', data["room"]) # send user new room name with event to show it on the page
+    print(f'\n\n joined room - {data["room"], all_messages, room_messages} \n\n') # print to console this message with room
 
 
 @socketio.on('leave')
