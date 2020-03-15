@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#display_name_submit').disabled = true;
     };
     
-    //
+    // Check room input field
     document.querySelector('#room_input').onkeyup = () => {
 
         if (document.querySelector('#room_input').value.length > 0) {
@@ -80,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // When user submits a message
     document.querySelector('#message_form').onsubmit = () => {
         const new_message = document.querySelector('#message_input').value;
-        socket.emit('new_message', {'msg': new_message, 'username': username, 'room': room}); 
+        socket.emit('new_message', {'msg': new_message, 'username': username, 'room': room});
+        // Clear input field
+        document.querySelector('#message_input').value = '';
         return false;
     };
     

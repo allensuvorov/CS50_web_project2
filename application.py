@@ -50,7 +50,7 @@ def join (data):
     send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
     room=data["room"]) # send all users in the this notification of the join
     emit('switch room name', data["room"]) # send user new room name with event to show it on the page
-    print(f'\n\n joined room - {data["room"], all_messages, room_messages} \n\n') # print to console this message with room
+    print(f'\n\n joined room - {data["room"], all_messages} \n\n') # print to console this message with room
 
 
 @socketio.on('leave')
@@ -68,10 +68,13 @@ def message(data):
     room = data["room"]
     time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime()) # Set timestamp
     
-    dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp}
-    if len(all_messages[all_rooms.index(room)]) <= 100:
-        all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
-    # all_messages.append(dict_message) # add message to sub list
+    dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp} # Dictionary with message data
+    
+    # check if server already has 100 msgs for this room and remove the earliest one
+    if len(all_messages[all_rooms.index(room)]) == 100:
+        all_messages[all_rooms.index(room)].pop(0)
+    all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
+
 
     print(f'\n\n all messages - {data["room"], all_messages, len(all_messages[all_rooms.index(room)])} \n\n') # print to console this messate with room
 
