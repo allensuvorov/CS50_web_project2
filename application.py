@@ -59,6 +59,19 @@ def leave(data):
     leave_room(data['room'])
     send({'msg':data['username'] + " has left the -" + data['room'] + "- channel."}, room=data['room'])
 
+@socketio.on('delete_message')
+def delete(data):
+    i = data["i"]
+    print(f'\n\n deleted messages index - {data["i"]} \n\n')
+    room = data["room"]
+    all_messages[all_rooms.index(room)].pop(i) # need to sync index
+    
+    # # get messages from this room
+    # room_messages = all_messages[all_rooms.index(data["room"])]
+    
+    # # send event with json passing 100 messages the user
+    # emit("room messages", room_messages)
+
 @socketio.on('new_message')
 def message(data):
     """Broadcast messages"""
@@ -73,7 +86,8 @@ def message(data):
     # check if server already has 100 msgs for this room and remove the earliest one
     if len(all_messages[all_rooms.index(room)]) == 100:
         all_messages[all_rooms.index(room)].pop(0)
-    all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list
+    
+    all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list for this room
 
 
     print(f'\n\n all messages - {data["room"], all_messages, len(all_messages[all_rooms.index(room)])} \n\n') # print to console this messate with room

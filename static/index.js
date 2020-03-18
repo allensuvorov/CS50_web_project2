@@ -117,33 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // send message history of the room to user
     socket.on('room messages', data =>{
-        // alert(JSON.stringify(data)); 
-        // document.querySelector('#display-message-section').append(JSON.stringify(data));
-        // document.querySelector('#display-message-section').append(" <br> ")
-        // document.querySelector('#display-message-section').append(JSON.stringify(data[0.msg]));
-        data.forEach (message =>{
-
-            const p = document.createElement('p');
-            const span_username = document.createElement('span');
-            const span_timestamp = document.createElement('span');
-            const br = document.createElement('br')
- 
-            // p.setAttribute("class", "my-msg");
-            // Username
-            // span_username.setAttribute("class", "my-username");
-            span_username.innerText = message.username;
-            // Timestamp
-            // span_timestamp.setAttribute("class", "timestamp");
-            span_timestamp.innerText = message.time_stamp;
-            // HTML to append
-            p.innerHTML += span_username.outerHTML + br.outerHTML + message.msg + br.outerHTML + span_timestamp.outerHTML
-            //Append
-            document.querySelector('#display-message-section').append(p);
-        });
-        // message = data[0]
-
-        // document.querySelector('#display-message-section').append(message.username,message.msg);
-
+        // alert(JSON.stringify(data));
+        data.forEach (printUserMsg);
 
     });
     // Display all incoming messages
@@ -158,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Display user's own message
             if (data.username == username) {
                     
-                // p.setAttribute("class", "my-msg");
+                p.setAttribute("class", "my-msg");
 
                 // Username
                 // span_username.setAttribute("class", "my-username");
@@ -176,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // Display other users' messages
             else if (typeof data.username !== 'undefined') {
-                // p.setAttribute("class", "others-msg");
+                p.setAttribute("class", "others-msg");
 
                 // Username
                 // span_username.setAttribute("class", "other-username");
@@ -205,6 +180,44 @@ document.addEventListener('DOMContentLoaded', () => {
     //#endregion Server WebSocket Events
         
     //#region Functions
+    
+    // Print user messages
+    function printUserMsg (message,i) {
+
+        const p = document.createElement('p');
+        const span_username = document.createElement('span');
+        const span_timestamp = document.createElement('span');
+        const br = document.createElement('br')
+
+        // p.setAttribute("class", "my-msg");
+        
+        // Username
+        // span_username.setAttribute("class", "my-username");
+        span_username.innerText = message.username;
+        
+        // Timestamp
+        // span_timestamp.setAttribute("class", "timestamp");
+        span_timestamp.innerText = message.time_stamp;
+        
+        // HTML to append
+        p.innerHTML += span_username.outerHTML + br.outerHTML + message.msg + br.outerHTML + span_timestamp.outerHTML
+        //Append
+
+        // Add button to hide message.
+        const hide = document.createElement('button');
+        hide.className = 'hide';
+        hide.innerHTML = 'Hide';
+        p.append(hide);
+
+        // When hide button is clicked, remove message.
+        hide.onclick = function() {
+            socket.emit('delete_message',{'i':i,'room':room});
+            console.log(i);
+            this.parentElement.remove();
+        };
+        document.querySelector('#display-message-section').append(p);
+    };
+
     // Switch Room function
     function switch_room () {
         let new_selected_room = this.innerHTML;

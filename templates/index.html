@@ -5,7 +5,13 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
         <script src="{{ url_for('static', filename='index.js') }}"></script>
         <style> 
-            .select-room:hover {cursor: pointer;}
+            .select-room:hover {
+                cursor: pointer;
+            }
+
+            /* .hide  {
+                float: right;
+            } */
         </style>
         <title>Flack: {{ current_room }}</title>
     </head>
