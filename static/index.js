@@ -211,8 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // When hide button is clicked, remove message.
         hide.onclick = function() {
-            socket.emit('delete_message',{'i':i,'room':room});
-            console.log(i);
+            console.log(message);
+            
+            socket.emit('delete_message',{'message':message,'i':i,'room':room});
+
             this.parentElement.remove();
         };
         document.querySelector('#display-message-section').append(p);

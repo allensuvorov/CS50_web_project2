@@ -1,6 +1,6 @@
 #region: import libraries and other setup
 import os
-import time
+import time, random
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
@@ -61,16 +61,16 @@ def leave(data):
 
 @socketio.on('delete_message')
 def delete(data):
-    i = data["i"]
-    print(f'\n\n deleted messages index - {data["i"]} \n\n')
+    
+    dict_message = data["message"]
     room = data["room"]
+
+    room_messages = all_messages[all_rooms.index(room)] # get list of messages from that room
+    i = room_messages.index(dict_message) # search list and find index of the message 
+    print(f'\n\n deleted messages index - {dict_message, i} \n\n')
+
     all_messages[all_rooms.index(room)].pop(i) # need to sync index
     
-    # # get messages from this room
-    # room_messages = all_messages[all_rooms.index(data["room"])]
-    
-    # # send event with json passing 100 messages the user
-    # emit("room messages", room_messages)
 
 @socketio.on('new_message')
 def message(data):
@@ -80,8 +80,9 @@ def message(data):
     username = data["username"]
     room = data["room"]
     time_stamp = time.strftime('%b-%d %I:%M:%S %p', time.localtime()) # Set timestamp
-    
-    dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp} # Dictionary with message data
+    msg_id = random.randint(1,1000000) # generate a random number to be a msg ID
+
+    dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp, "msg_id": msg_id} # Dictionary with message data
     
     # check if server already has 100 msgs for this room and remove the earliest one
     if len(all_messages[all_rooms.index(room)]) == 100:
