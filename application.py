@@ -79,7 +79,7 @@ def message(data):
     msg = data["msg"]
     username = data["username"]
     room = data["room"]
-    time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime()) # Set timestamp
+    time_stamp = time.strftime('%b-%d %I:%M:%S %p', time.localtime()) # Set timestamp
     
     dict_message = {"username": username, "msg": msg, "time_stamp": time_stamp} # Dictionary with message data
     
