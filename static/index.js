@@ -119,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('room messages', data =>{
         // alert(JSON.stringify(data));
         data.forEach (printUserMsg);
-
     });
 
     // Display all incoming messages
@@ -127,18 +126,20 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Display current message
         if (data.msg) {
-            // const p = document.createElement('p');
-            // const span_username = document.createElement('span');
-            // const span_timestamp = document.createElement('span');
-            // const br = document.createElement('br')
-
+            
             // Display user's own message
             if (data.username == username) {
                 printUserMsg(data)
             }
             // Display other users' messages
             else if (typeof data.username !== 'undefined') {
-                p.setAttribute("class", "others-msg");
+
+                const p = document.createElement('p');
+                const span_username = document.createElement('span');
+                const span_timestamp = document.createElement('span');
+                const br = document.createElement('br')
+
+                p.setAttribute("id", data.msg_id);
 
                 // Username
                 // span_username.setAttribute("class", "other-username");
@@ -164,6 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Autofocus on text box
         // document.querySelector("#message_input").focus();
     });
+
+    // Delete selected message 
+    socket.on('delete message', data => {
+        console.log("#" + data.msg_id);
+        document.querySelector ("#" + CSS.escape(data.msg_id)).remove();
+
+        // document.querySelector (`#${data.msg_id}`).remove();
+    });
     //#endregion Server WebSocket Events
         
     //#region Functions
@@ -171,81 +180,43 @@ document.addEventListener('DOMContentLoaded', () => {
     // Print user messages
     function printUserMsg (data) {
 
-    console.log(data.msg);
+        console.log(data.msg);
 
-    const p = document.createElement('p');
-    const span_username = document.createElement('span');
-    const span_timestamp = document.createElement('span');
-    const br = document.createElement('br')
+        const p = document.createElement('p');
+        const span_username = document.createElement('span');
+        const span_timestamp = document.createElement('span');
+        const br = document.createElement('br')
 
-    p.setAttribute("class", "my-msg");
-    
-    // Username
-    // span_username.setAttribute("class", "my-username");
-    span_username.innerText = data.username;
-    
-    // Timestamp
-    // span_timestamp.setAttribute("class", "timestamp");
-    span_timestamp.innerText = data.time_stamp;
-    
-    // HTML to append
-    p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML
-    
-    // Add button to hide message.
-    const hide = document.createElement('button');
-    hide.className = 'hide';
-    hide.innerHTML = 'Hide';
-    p.append(hide);
+        p.setAttribute("id", data.msg_id);
+        
+        // Username
+        // span_username.setAttribute("class", "my-username");
+        span_username.innerText = data.username;
+        
+        // Timestamp
+        // span_timestamp.setAttribute("class", "timestamp");
+        span_timestamp.innerText = data.time_stamp;
+        
+        // HTML to append
+        p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML
+        
+        // Add button to hide message.
+        const hide = document.createElement('button');
+        hide.className = 'hide';
+        hide.innerHTML = 'Hide';
+        p.append(hide);
     
     // When hide button is clicked, remove message.
+
     hide.onclick = function() {
         console.log(data);
         socket.emit('delete_message',{'message':data,'room':room});
-        this.parentElement.remove();
+        // this.parentElement.remove();
     };
     
     //Append
     document.querySelector('#display-message-section').append(p);
 };
-
-
-    // Print user messages
-    // function printUserMsg (message) {
-
-    //     const p = document.createElement('p');
-    //     const span_username = document.createElement('span');
-    //     const span_timestamp = document.createElement('span');
-    //     const br = document.createElement('br')
-
-    //     p.setAttribute("class", "my-msg");
-        
-    //     // Username
-    //     // span_username.setAttribute("class", "my-username");
-    //     span_username.innerText = message.username;
-        
-    //     // Timestamp
-    //     // span_timestamp.setAttribute("class", "timestamp");
-    //     span_timestamp.innerText = message.time_stamp;
-        
-    //     // HTML to append
-    //     p.innerHTML += span_username.outerHTML + br.outerHTML + message.msg + br.outerHTML + span_timestamp.outerHTML
-        
-    //     // Add button to hide message.
-    //     const hide = document.createElement('button');
-    //     hide.className = 'hide';
-    //     hide.innerHTML = 'Hide';
-    //     p.append(hide);
-        
-    //     // When hide button is clicked, remove message.
-    //     hide.onclick = function() {
-    //         console.log(message);
-    //         socket.emit('delete_message',{'message':message,'room':room});
-    //         this.parentElement.remove();
-    //     };
-        
-    //     //Append
-    //     document.querySelector('#display-message-section').append(p);
-    // };
 
     // Switch Room function
     function switch_room () {

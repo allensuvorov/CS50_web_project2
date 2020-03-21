@@ -70,6 +70,9 @@ def delete(data):
     print(f'\n\n deleted messages index - {dict_message, i} \n\n')
 
     all_messages[all_rooms.index(room)].pop(i) # need to sync index
+
+    # send event to all users in the room to delete the message
+    emit('delete message', dict_message, room = room)
     
 
 @socketio.on('new_message')
