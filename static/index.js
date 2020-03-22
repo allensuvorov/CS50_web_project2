@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 printSysMsg(data.msg);
             }
         }
-        scrollDownChatWindow();
+        // scrollDownChatWindow();
 
         // Autofocus on text box
         // document.querySelector("#message_input").focus();
