@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     //#region Variables
     let room = localStorage.getItem('room_name_holder');
+    console.log(`room = ${room}`);
     let username = localStorage.getItem('display_name_holder');
     let message = {};
     // Connect to websocket
@@ -17,8 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (username) document.querySelector('#display-name').innerHTML = username;
 
     // User is brought back to the room where they were
-    if (room) join_room(room);
+    if (room) {
+        let room_exists = false;
+        // check if user past channel is still among channels on server
+        document.querySelectorAll('.select-room').forEach(li => {
+            if (li.innerHTML == room) room_exists = true;
+        });
+        
+        if (room_exists) {
+            console.log ('room exists')
+            join_room(room);
+        } else { 
+            console.log ('room is not longer on server');
+            localStorage.removeItem('room_name_holder');
+            room = "";
+            console.log (localStorage.getItem('room_name_holder'));
 
+        }
+    };
     //#endregion Page Settings On-Load
         
     //#region Client Event Handlers
@@ -68,10 +85,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // When user submits new room, take user input and send it with an event to server
     document.querySelector('#room_form').onsubmit = () => {
         const new_room_name = document.querySelector('#room_input').value;
-        socket.emit('add room', {'new_room_name': new_room_name})
+        let unique_room_name = true;
+        // check if user input channel name is already among channels
+        document.querySelectorAll('.select-room').forEach(li => {
+            if (li.innerHTML == new_room_name) unique_room_name = false;
+        });
         
-        // Clear input field
-        document.querySelector('#room_input').value = '';
+        if (!unique_room_name) {
+            alert (`Channel -${new_room_name}- already exists! `)
+        } else {
+            socket.emit('add room', {'new_room_name': new_room_name})
+            // Clear input field
+            document.querySelector('#room_input').value = '';
+        };
 
         // Stops the page from reloading after submitting the form
         return false;
@@ -198,15 +224,16 @@ document.addEventListener('DOMContentLoaded', () => {
         //alert(selected_room);
         // Check if user already in the room
         if (new_selected_room === room) {
+            console.log(`new selected room = ${new_selected_room}`)
+            console.log(`room = ${room}`)
             msg = `You are already in the ${room} channel.`;
-                printSysMsg(msg);
-            } 
-            else {
-                leave_room(room);
-                join_room(new_selected_room);
-                room = new_selected_room;
-                localStorage.setItem('room_name_holder', room);
-                // alert (`you have joined ${room}`);
+            printSysMsg(msg); 
+        } else {
+            if (room) leave_room(room);
+            join_room(new_selected_room);
+            room = new_selected_room;
+            localStorage.setItem('room_name_holder', room);
+            // alert (`you have joined ${room}`);
         }
     };
 

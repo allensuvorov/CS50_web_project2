@@ -38,19 +38,19 @@ def add_room (data):
 def join (data):
     
     room = data["room"]
+    if room in all_rooms:
 
-    join_room(data["room"]) # join room function
-    
-    # get messages from this room
-    room_messages = all_messages[all_rooms.index(data["room"])]
-    
-    # send event with json passing 100 messages the user
-    emit("room messages", room_messages)
+        join_room(room) # join room function
+        # get messages from this room
+        room_messages = all_messages[all_rooms.index(room)]
+        
+        # send event with json passing 100 messages the user
+        emit("room messages", room_messages)
 
-    send({"msg":data["username"] + " has joined the -" + data["room"] + "- channel."}, 
-    room=data["room"]) # send all users in the this notification of the join
-    emit('switch room name', data["room"]) # send user new room name with event to show it on the page
-    print(f'\n\n joined room - {data["room"], all_messages} \n\n') # print to console this message with room
+        send({"msg":data["username"] + " has joined the -" + room + "- channel."}, 
+        room=room) # send all users in the this notification of the join
+        emit('switch room name', room) # send user new room name with event to show it on the page
+        print(f'\n\n joined room - {room, all_messages} \n\n') # print to console this message with room
 
 
 @socketio.on('leave')
@@ -94,7 +94,7 @@ def message(data):
     all_messages[all_rooms.index(room)].append(dict_message) # add message to sub list for this room
 
 
-    print(f'\n\n all messages - {data["room"], all_messages, len(all_messages[all_rooms.index(room)])} \n\n') # print to console this messate with room
+    print(f'\n\n all messages - {room, all_messages, len(all_messages[all_rooms.index(room)])} \n\n') # print to console this messate with room
 
     send(dict_message, room=room)
 
