@@ -124,36 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Display all incoming messages
     socket.on('message', data => {
         
-        // Display current message
+        // Display current message, check if there is a message
         if (data.msg) {
             
-            // Display user's own message
-            if (data.username == username) {
+            // Display all users message
+            if (typeof data.username !== 'undefined') {
                 printUserMsg(data)
-            }
-            // Display other users' messages
-            else if (typeof data.username !== 'undefined') {
-
-                const p = document.createElement('p');
-                const span_username = document.createElement('span');
-                const span_timestamp = document.createElement('span');
-                const br = document.createElement('br')
-
-                p.setAttribute("id", data.msg_id);
-
-                // Username
-                // span_username.setAttribute("class", "other-username");
-                span_username.innerText = data.username;
-
-                // Timestamp
-                span_timestamp.setAttribute("class", "timestamp");
-                span_timestamp.innerText = data.time_stamp;
-
-                // HTML to append
-                p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML;
-
-                //Append
-                document.querySelector('#display-message-section').append(p);
             }
             // Display system message
             else {
@@ -177,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
     //#region Functions
     
-    // Print user messages
+    // Print all users messages
     function printUserMsg (data) {
 
         console.log(data.msg);
@@ -200,23 +176,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // HTML to append
         p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML
         
-        // Add button to hide message.
-        const hide = document.createElement('button');
-        hide.className = 'hide';
-        hide.innerHTML = 'Hide';
-        p.append(hide);
-    
-    // When hide button is clicked, remove message.
-
-    hide.onclick = function() {
-        console.log(data);
-        socket.emit('delete_message',{'message':data,'room':room});
-        // this.parentElement.remove();
+        // For user own message add button to hide message.
+        if (data.username == username) {
+            const hide = document.createElement('button');
+            hide.className = 'hide';
+            hide.innerHTML = 'Hide';
+            p.append(hide);
+        
+            // When hide button is clicked, send even to server to delete message.
+            hide.onclick = () => {socket.emit('delete_message',{'message':data,'room':room})};
+                // console.log(data);
+                // this.parentElement.remove();
+        }
+        //Append
+        document.querySelector('#display-message-section').append(p);
     };
-    
-    //Append
-    document.querySelector('#display-message-section').append(p);
-};
 
     // Switch Room function
     function switch_room () {
