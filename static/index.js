@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    //#region Variables
+//#region Variables
     let room = localStorage.getItem('room_name_holder');
-    console.log(`room = ${room}`);
     let username = localStorage.getItem('display_name_holder');
-    let message = {};
-    // Connect to websocket
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    //#endregion
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port); // Connect to websocket
     
-    //#region Page Settings On-Load
+    console.log(`room = ${room}`); // for debugging 
+//#endregion
+    
+//#region Page Settings On-Load
     
     // By default, submit button is disabled
     document.querySelector('#display_name_submit').disabled = true; // display name
@@ -30,15 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
             join_room(room);
         } else { 
             console.log ('room is not longer on server');
-            localStorage.removeItem('room_name_holder');
-            room = "";
+            localStorage.removeItem('room_name_holder'); //clear room in local storage for the user
+            room = ""; // clear the room variable 
             console.log (localStorage.getItem('room_name_holder'));
 
         }
     };
-    //#endregion Page Settings On-Load
+
+//#endregion Page Settings On-Load
         
-    //#region Client Event Handlers
+//#region Client Event Handlers
 
     // Enable button only if there is text in the input field
     document.querySelector('#display_name_input').onkeyup = () => {
@@ -80,8 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Stops the page from reloading after submitting the form
         return false;
     };
-
-    
+  
     // When user submits new room, take user input and send it with an event to server
     document.querySelector('#room_form').onsubmit = () => {
         const new_room_name = document.querySelector('#room_input').value;
@@ -95,20 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
             alert (`Channel -${new_room_name}- already exists! `)
         } else {
             socket.emit('add room', {'new_room_name': new_room_name})
-            // Clear input field
-            document.querySelector('#room_input').value = '';
+            document.querySelector('#room_input').value = ''; // Clear input field
         };
 
-        // Stops the page from reloading after submitting the form
-        return false;
+        return false; // Stops the page from reloading after submitting the form
     };
 
     // When user submits a message
     document.querySelector('#message_form').onsubmit = () => {
         const new_message = document.querySelector('#message_input').value;
         socket.emit('new_message', {'msg': new_message, 'username': username, 'room': room});
-        // Clear input field
-        document.querySelector('#message_input').value = '';
+        document.querySelector('#message_input').value = ''; // Clear input field
         return false;
     };
     
@@ -116,34 +112,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.select-room').forEach(li => {
         li.onclick = switch_room;
     });
-    //#endregion Client Events
+//#endregion Client Events
         
-    //#region Server WebSocket Event Handlers
+//#region Server WebSocket Event Handlers
 
     // When a new room is announced, add new room to HTML
     socket.on('all rooms', data => {            
         const li = document.createElement('li');
-        
-        // Get last room from the array (list)
-        li.innerHTML = data[data.length-1]; 
-        
+        li.innerHTML = data[data.length-1]; // Get last room from the array (list)
         li.setAttribute("class", "select-room");
         document.querySelector('#rooms').append(li);
-        
-        //dynamically created room gets onclick handler
-        li.onclick = switch_room;
-        
+        li.onclick = switch_room; //dynamically created room gets onclick handler
     });
 
     // switch room name on user page
     socket.on('switch room name', data =>{
-        //  alert(data);
         document.querySelector('#current-room').innerHTML = data;
     });
 
     // send message history of the room to user
     socket.on('room messages', data =>{
-        // alert(JSON.stringify(data));
         data.forEach (printUserMsg);
     });
 
@@ -162,27 +150,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 printSysMsg(data.msg);
             }
         }
-        // scrollDownChatWindow();
 
         // Autofocus on text box
-        // document.querySelector("#message_input").focus();
+        document.querySelector("#message_input").focus();
     });
 
     // Delete selected message 
     socket.on('delete message', data => {
         console.log("#" + data.msg_id);
         document.querySelector ("#" + CSS.escape(data.msg_id)).remove();
-
-        // document.querySelector (`#${data.msg_id}`).remove();
     });
-    //#endregion Server WebSocket Events
+//#endregion Server WebSocket Events
         
-    //#region Functions
+//#region Functions
     
     // Print all users messages
     function printUserMsg (data) {
-
-        console.log(data.msg);
 
         const p = document.createElement('p');
         const span_username = document.createElement('span');
@@ -190,17 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const br = document.createElement('br')
 
         p.setAttribute("id", data.msg_id);
-        
-        // Username
-        // span_username.setAttribute("class", "my-username");
-        span_username.innerText = data.username;
-        
-        // Timestamp
-        // span_timestamp.setAttribute("class", "timestamp");
-        span_timestamp.innerText = data.time_stamp;
-        
-        // HTML to append
-        p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML
+        span_username.innerText = data.username; // Username
+        span_timestamp.innerText = data.time_stamp; // Timestamp
+        p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML // HTML to append
         
         // For user own message add button to hide message.
         if (data.username == username) {
@@ -211,17 +186,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
             // When hide button is clicked, send even to server to delete message.
             hide.onclick = () => {socket.emit('delete_message',{'message':data,'room':room})};
-                // console.log(data);
-                // this.parentElement.remove();
         }
-        //Append
-        document.querySelector('#display-message-section').append(p);
+        document.querySelector('#display-message-section').append(p); //Append
     };
 
     // Switch Room function
     function switch_room () {
         let new_selected_room = this.innerHTML;
-        //alert(selected_room);
         // Check if user already in the room
         if (new_selected_room === room) {
             console.log(`new selected room = ${new_selected_room}`)
@@ -233,16 +204,13 @@ document.addEventListener('DOMContentLoaded', () => {
             join_room(new_selected_room);
             room = new_selected_room;
             localStorage.setItem('room_name_holder', room);
-            // alert (`you have joined ${room}`);
         }
     };
 
     // Function for emitting join room event
     function join_room (room) {
         socket.emit('join', {'username': username, 'room': room});
-
-        // Clear message area
-        document.querySelector('#display-message-section').innerHTML = '';
+        document.querySelector('#display-message-section').innerHTML = ''; // Clear message area
     };
 
     // Function for emitting leave room event
@@ -250,22 +218,14 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit('leave', {'username': username, 'room': room}); 
     };
 
-    // Scroll chat window down
-    function scrollDownChatWindow() {
-        const chatWindow = document.querySelector("#display-message-section");
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
     // Print system messages
     function printSysMsg(msg) {
         const p = document.createElement('p');
-        // p.setAttribute("class", "system-msg");
         p.innerHTML = msg;
         document.querySelector('#display-message-section').append(p);
-        scrollDownChatWindow()
 
         // Autofocus on text box
         document.querySelector("#message_input").focus();
     }
-    //#endregion
+//#endregion
 });
