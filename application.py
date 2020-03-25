@@ -1,4 +1,4 @@
-#region: import libraries and other setup
+#region: Import libraries and other setup
 import os
 import time, random
 
@@ -11,7 +11,7 @@ socketio = SocketIO(app)
 
 #endregion
 
-#region: variables
+#region: Variables
 all_messages = [] # list of lists with dictionaries (messages) on the server
 all_rooms = [] # list with all rooms on the server
 room_messages = [] # list with messages from a specific room
@@ -19,14 +19,14 @@ dict_message = {} # dictionary with one message data
 
 #endregion
 
-#region: route events
+#region: Route events
 @app.route("/")
 def index():
     return render_template("index.html", all_rooms=all_rooms)
 
 #endregion
 
-#region: socketio events
+#region: Socketio events
 
 @socketio.on("add room") # when a user sends an "add room" event
 def add_room (data):
@@ -85,7 +85,7 @@ def message(data):
 
 #endregion
 
-#region: new way of initialization: need to learn how to use
+#region: New way of initialization
 if __name__ == '__main__':
     socketio.run(app, debug=True)
 #endregion

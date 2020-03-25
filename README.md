@@ -1,23 +1,22 @@
 # Project 2
-Description: Online chat application
-Cource: Web Programming with Python and JavaScript
+Description: Basic Online Chat Application - Flack
+Link to the task spec: https://docs.cs50.net/ocw/web/projects/2/project2.html
+Cource: CS50 Web Programming with Python and JavaScript
 
-Plan
-1. Display Name:
-    * 00:42:23 - hello1.html : get user input from form
-    * 01:13:40 - storage.html : store display name locally
-    * 01:18:36 - currency : Integrating JavaScript with Python and Flask
-2. Channel Creation:
-    * get user input
-    * new channel gets saved on server in a list
-    * channel list is displayed
-3. Messages:
-    * selecting channel
-    * resource: 
-        * https://secdevops.ai/weekend-project-part-2-turning-flask-into-a-real-time-websocket-server-using-flask-socketio-ab6b45f1d896
-        * https://youtu.be/zQDzNNt6xd4 Create Chat Applicaton Using Flask-SocketIO
-        
-
-
-Fix later:
+## Files and sections
+1. application.py
+    * Import libraries and other setup
+    * Variables
+    * Route events
+    * Socketio events
+    * New way of initialization
+2. index.js
+    * Variables
+    * Page Settings On-Load
+    * Client Event Handlers
+    * Server WebSocket Event Handlers
+    * Functions
+3. index.html:
+    * name and rooms
+    * messages
 
