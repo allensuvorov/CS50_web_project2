@@ -2,6 +2,7 @@
 Description: Basic Online Chat Application - Flack
 Link to the task spec: https://docs.cs50.net/ocw/web/projects/2/project2.html
 Cource: CS50 Web Programming with Python and JavaScript
+Youtube Video: https://youtu.be/_x0MUs_HsFM
 
 ## Files and sections
 1. application.py
