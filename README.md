@@ -1,7 +1,7 @@
 # Project2 - "Flack - Online Chat" (JavaScript, Flask Socket.IO)
 - Description: Basic Online Chat Application - Flack
 - Video overview of the completed project: https://youtu.be/_x0MUs_HsFM
-- Task specification: https://docs.cs50.net/ocw/web/projects/2/project2.html
+- Project specification: https://docs.cs50.net/ocw/web/projects/2/project2.html
 - Course: CS50's Web Programming with Python and JavaScript
 
 
