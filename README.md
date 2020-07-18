@@ -1,8 +1,9 @@
-# Project 2
-Description: Basic Online Chat Application - Flack
-Link to the task spec: https://docs.cs50.net/ocw/web/projects/2/project2.html
-Cource: CS50 Web Programming with Python and JavaScript
-Youtube Video: https://youtu.be/_x0MUs_HsFM
+# Project2 - "Flack - Online Chat" (JavaScript, Flask Socket.IO)
+- Description: Basic Online Chat Application - Flack
+- Video overview of the completed project: https://youtu.be/_x0MUs_HsFM
+- Link to the task spec: https://docs.cs50.net/ocw/web/projects/2/project2.html
+- Course: CS50's Web Programming with Python and JavaScript
+
 
 ## Files and sections
 1. application.py
